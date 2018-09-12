@@ -1,30 +1,104 @@
 <!doctype html>
 <html>
+
 <head>
-    <title>My Game</title>
+    <title>Circle Cycle</title>
 </head>
+
 <body>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
-    
+
     <script>
         var canvas, canvasContext;
-    
-    window.onload = function() {
-        canvas = document.getElementById('gameCanvas');
-        canvasContext = canvas.getContext('2d');
-        
-         setInterval(mainLoop, 1000 / 50);
-    }
-    
-      function mainLoop(){
-        colorRect(0,0, canvas.width, canvas.height, 'black') // background
-      }
-    
-    function colorRect(x,y,w,h,color){
-        canvasContext.fillStyle = color;
-        canvasContext.fillRect(x,y,w,h);
-    }
-        
+
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            canvasContext = canvas.getContext('2d');
+
+            document.addEventListener('keydown', keyPressed);
+            document.addEventListener('keyup', keyReleased);
+
+
+            setInterval(mainLoop, 1000 / 50);
+        }
+
+        /* player info */
+        var pXpos = 0;
+        var pYpos = 0;
+        const P_WIDTH = 30;
+        const P_HEIGHT = 30;
+        var pXspeed = 5;
+
+
+        /* player keyPressing */
+        const LEFT_ARROW_KEY = 37;
+        const RIGHT_ARROW_KEY = 39;
+        var leftArrowKeyPressed = false;
+        var rightArrowKeyPressed = false;
+
+        var startingPos = true; // toggle starting positions
+
+
+        function mainLoop() {
+            colorRect(0, 0, canvas.width, canvas.height, 'black') // background
+
+
+            colorRect(pXpos, pYpos, P_WIDTH, P_HEIGHT, 'green') //player
+
+            if (startingPos) {
+                startPos();
+                startingPos = false;
+
+            }
+
+
+            playerMove();
+
+        }
+
+
+        function keyPressed(evt) {
+            console.log(evt.keyCode)
+            if (evt.keyCode == LEFT_ARROW_KEY) {
+                leftArrowKeyPressed = true;
+            }
+            if (evt.keyCode == RIGHT_ARROW_KEY) {
+                rightArrowKeyPressed = true;
+            }
+        }
+
+
+        function keyReleased(evt) {
+            if (evt.keyCode == LEFT_ARROW_KEY) {
+                leftArrowKeyPressed = false;
+            }
+            if (evt.keyCode == RIGHT_ARROW_KEY) {
+                rightArrowKeyPressed = false;
+            }
+        }
+
+        function colorRect(x, y, w, h, color) {
+            canvasContext.fillStyle = color;
+            canvasContext.fillRect(x, y, w, h);
+        }
+
+        function startPos() {
+            pXpos = canvas.width / 2 - P_WIDTH / 2;
+            pYpos = canvas.height / 2 - P_HEIGHT / 2;
+
+        }
+
+        function playerMove() {
+            
+            if (leftArrowKeyPressed) {
+                pXpos -= pXspeed;
+            }
+            if (rightArrowKeyPressed) {
+                pXpos += pXspeed;
+            }
+        }
+
     </script>
-   </body>
-   </html>
+</body>
+
+</html>
