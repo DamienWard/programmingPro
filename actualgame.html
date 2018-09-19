@@ -9,7 +9,7 @@
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <script>
-        var canvas, canvasContext,imgAssets;
+        var canvas, canvasContext, imgAssets;
 
         window.onload = function() {
             canvas = document.getElementById('gameCanvas');
@@ -29,17 +29,17 @@
         const PLAYER_WIDTH = 50;
         const PLAYER_HEIGHT = 30;
         var playerXspeed = 10;
-        
+
         /* doginfo */
         var dogXpos = 150;
         var dogYpos = 0;
         const DOG_WIDTH = 40;
         const DOG_HEIGHT = 30;
-        var dogYspeed = 5;
-        var dogXspeed = 5;
-        
-        
-      
+        var dogYspeed = 3;
+        var dogXspeed = 3;
+
+        var dogs = [];
+
         /* player keyPressing */
         const LEFT_ARROW_KEY = 37;
         const RIGHT_ARROW_KEY = 39;
@@ -48,15 +48,18 @@
 
         var startingPos = true; // toggle starting positions
 
+        var dogs = [];
+        var dogTotal = 5;
+
 
         function mainLoop() {
             colorRect(0, 0, canvas.width, canvas.height, 'black') // background
-//            colorRect(playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT, 'green') //player
+            //            colorRect(playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT, 'green') //player
             drawingImages(img.player, playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT);
-//            colorRect(dogXpos, dogYpos, DOG_WIDTH, DOG_HEIGHT, 'green') //block
-            drawingImages(img.dog, dogXpos, dogYpos, DOG_WIDTH, DOG_HEIGHT);
-           
-        
+            //            colorRect(dogXpos, dogYpos, DOG_WIDTH, DOG_HEIGHT, 'green') //block
+          
+
+
             if (startingPos) {
                 startPos();
                 startingPos = false;
@@ -66,10 +69,28 @@
 
             playerMove();
             dogMove();
-          
-    
-            
+            drawBlocks()
 
+
+
+        }
+
+        function randomBlock() {
+            var dogSize = Math.floor(Math.random() * (40 - 15) + 15) // get rand num between 2 values     
+            var newBlockRand = {
+                dogSize: dogSize,
+                dogXpos: Math.floor(Math.random() * (400 - dogSize - 0)) + 0,
+                dogYpos: Math.floor(Math.random() * (400 - dogSize - 0)) + 0,
+                dogXspeed: Math.floor(Math.random() * (7 - 0)) + 1,
+                dogYspeed: Math.floor(Math.random() * (7 - 0)) + 1,
+            }
+            return newBlockRand
+        }
+
+        function drawBlocks() {
+            dogs.forEach(function(block, index) {
+                drawingImages(img.dog, block.dogXpos, block.dogYpos, block.dogSize, block.dogSize);
+            });
         }
 
         function loadImgAssets() {
@@ -78,9 +99,9 @@
             img.player.src = 'Image/catd.png'
             img.dog = new Image();
             img.dog.src = 'Image/dog.png'
-          
-          
-            
+
+
+
             return img;
         }
 
@@ -113,6 +134,10 @@
             playerXpos = canvas.width / 2 - PLAYER_WIDTH / 2;
             playerYpos = canvas.height - PLAYER_HEIGHT;
 
+            for (i = 0; i < dogTotal; i++) {
+                dogs.push(randomBlock());
+            }
+
         }
 
         function playerMove() {
@@ -124,33 +149,33 @@
                 playerXpos += playerXspeed;
             }
         }
-        
-        function drawingImages(src,x,y,w,h) {
+
+        function drawingImages(src, x, y, w, h) {
             canvasContext.drawImage(src, x, y, w, h);
         }
 
         function dogMove() {
-            dogYpos += dogYspeed;
-            dogXpos += dogXspeed;
-            if (dogXpos > canvas.width - DOG_WIDTH){
-                dogXspeed *= -1;
+            dogs.forEach(function(dog,index){
+                dog.dogYpos += dog.dogYspeed;
+                dog.dogXpos += dog.dogXspeed;
+                if (dog.dogXpos > canvas.width - dog.dogSize) {
+                    dog.dogXspeed *= -1;
                 }
-            if (dogXpos < 0){
-                dogXspeed *= -1;
+                if (dog.dogXpos < 0) {
+                    dog.dogXspeed *= -1;
                 }
-            if (dogYpos > canvas.height - DOG_WIDTH){
-                dogYspeed *= -1;
-            }
-            if (dogYpos < 0){
-                dogYspeed *= -1;
-            }
-            
+                if (dog.dogYpos > canvas.height - dog.dogSize) {
+                    dog.dogYspeed *= -1;
+                }
+                if (dog.dogYpos < 0) {
+                    dog.dogYspeed *= -1;
+                }
+                
+            });
 
-    }
-            
-    
-    
-        
+
+
+        }
 
     </script>
 </body>
