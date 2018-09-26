@@ -35,8 +35,9 @@
         var dogYpos = 0;
         const DOG_WIDTH = 40;
         const DOG_HEIGHT = 30;
-        var dogYspeed = 3;
-        var dogXspeed = 3;
+        var dogYspeed = 6;
+        var dogXspeed = 6;
+        var lives = 6;
 
         var dogs = [];
 
@@ -47,6 +48,7 @@
         var rightArrowKeyPressed = false;
 
         var startingPos = true; // toggle starting positions
+       
 
         var dogs = [];
         var dogTotal = 5;
@@ -57,7 +59,7 @@
             //            colorRect(playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT, 'green') //player
             drawingImages(img.player, playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT);
             //            colorRect(dogXpos, dogYpos, DOG_WIDTH, DOG_HEIGHT, 'green') //block
-          
+            
 
 
             if (startingPos) {
@@ -69,7 +71,9 @@
 
             playerMove();
             dogMove();
-            drawBlocks()
+            drawBlocks();
+            collision();
+            
 
 
 
@@ -81,8 +85,8 @@
                 dogSize: dogSize,
                 dogXpos: Math.floor(Math.random() * (400 - dogSize - 0)) + 0,
                 dogYpos: Math.floor(Math.random() * (400 - dogSize - 0)) + 0,
-                dogXspeed: Math.floor(Math.random() * (7 - 0)) + 1,
-                dogYspeed: Math.floor(Math.random() * (7 - 0)) + 1,
+                dogXspeed: Math.floor(Math.random() * (5 - 0)) + 1,
+                dogYspeed: Math.floor(Math.random() * (5 - 0)) + 1,
             }
             return newBlockRand
         }
@@ -90,7 +94,16 @@
         function drawBlocks() {
             dogs.forEach(function(block, index) {
                 drawingImages(img.dog, block.dogXpos, block.dogYpos, block.dogSize, block.dogSize);
+          
             });
+        }
+        
+        function collision(){
+            if (playerYpos + PLAYER_HEIGHT, PLAYER_WIDTH > dogYpos && playerYpos < dogYpos + DOG_HEIGHT, DOG_WIDTH
+               && playerXpos + PLAYER_HEIGHT, PLAYER_WIDTH > dogXpos && playerYpos < dogXpos + DOG_HEIGHT, DOG_WIDTH
+               ){
+                starting = true;
+            }
         }
 
         function loadImgAssets() {
@@ -130,50 +143,62 @@
             canvasContext.fillRect(x, y, w, h);
         }
 
-        function startPos() {
-            playerXpos = canvas.width / 2 - PLAYER_WIDTH / 2;
-            playerYpos = canvas.height - PLAYER_HEIGHT;
+    
 
-            for (i = 0; i < dogTotal; i++) {
-                dogs.push(randomBlock());
+            function startPos() {
+                playerXpos = canvas.width / 2 - PLAYER_WIDTH / 2;
+                playerYpos = canvas.height - PLAYER_HEIGHT;
+
+                for (i = 0; i < dogTotal; i++) {
+                    dogs.push(randomBlock());
+                }
+
             }
 
-        }
+            function playerMove() {
 
-        function playerMove() {
-
-            if (leftArrowKeyPressed && playerXpos > 0) {
-                playerXpos -= playerXspeed;
+                if (leftArrowKeyPressed && playerXpos > 0) {
+                    playerXpos -= playerXspeed;
+                }
+                if (rightArrowKeyPressed && playerXpos < 370) {
+                    playerXpos += playerXspeed;
+                }
             }
-            if (rightArrowKeyPressed && playerXpos < 370) {
-                playerXpos += playerXspeed;
+
+            function drawingImages(src, x, y, w, h) {
+                canvasContext.drawImage(src, x, y, w, h);
             }
-        }
 
-        function drawingImages(src, x, y, w, h) {
-            canvasContext.drawImage(src, x, y, w, h);
-        }
+            function dogMove() {
+                dogs.forEach(function(dog, index) {
+                    dog.dogYpos += dog.dogYspeed;
+                    dog.dogXpos += dog.dogXspeed;
+                    if (dog.dogXpos > canvas.width - dog.dogSize) {
+                        dog.dogXspeed *= -1;
+                    }
+                    if (dog.dogXpos < 0) {
+                        dog.dogXspeed *= -1;
+                    }
+                    if (dog.dogYpos > canvas.height - dog.dogSize) {
+                        dog.dogYspeed *= -1;
+                    }
+                    if (dog.dogYpos < 0) {
+                        dog.dogYspeed *= -1;
+                    }
+                    if (
+                        playerXpos + PLAYER_WIDTH > dog.dogXpos 
+                        && playerXpos < dog.dogXpos + dog.dogSize
+                        && playerYpos + PLAYER_HEIGHT > dog.dogYpos 
+                        && playerYpos < dog.dogYpos + dog.dogSize
+                    ){
+                        lives--;
+                        console.log(lives);
+                        playerXpos = 0;
+                    }
+                  
 
-        function dogMove() {
-            dogs.forEach(function(dog,index){
-                dog.dogYpos += dog.dogYspeed;
-                dog.dogXpos += dog.dogXspeed;
-                if (dog.dogXpos > canvas.width - dog.dogSize) {
-                    dog.dogXspeed *= -1;
-                }
-                if (dog.dogXpos < 0) {
-                    dog.dogXspeed *= -1;
-                }
-                if (dog.dogYpos > canvas.height - dog.dogSize) {
-                    dog.dogYspeed *= -1;
-                }
-                if (dog.dogYpos < 0) {
-                    dog.dogYspeed *= -1;
-                }
-                
-            });
 
-
+                });
 
         }
 
