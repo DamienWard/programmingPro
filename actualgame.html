@@ -2,15 +2,34 @@
 <html>
 
 <head>
-    <title>Circle Cycle</title>
+    <title>Meow Cat</title>
+    <style>
+        button,
+        canvas {
+            display: block;
+            margin: auto;
+        }
+
+        html {
+            background-color: gold;
+        }
+
+    </style>
 </head>
 
 <body>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
-
+    <button onclick='startPos()'>Play Again</button>
     <script>
         var canvas, canvasContext, imgAssets;
+        var username = '';
+        while(username == '') {
+            username = prompt('What is your name?') || '';
+        }
 
+        function playagain() {
+            console.log('worked');
+        }
         window.onload = function() {
             canvas = document.getElementById('gameCanvas');
             canvasContext = canvas.getContext('2d');
@@ -23,6 +42,7 @@
             setInterval(mainLoop, 1000 / 50);
         }
 
+        var dogLove = prompt('How many dogs are you wanting?');
         /* player info */
         var playerXpos = 0;
         var playerYpos = 0;
@@ -40,6 +60,7 @@
         var lives = 6;
 
         var dogs = [];
+        var lives = 3;
 
         /* player keyPressing */
         const LEFT_ARROW_KEY = 37;
@@ -48,32 +69,45 @@
         var rightArrowKeyPressed = false;
 
         var startingPos = true; // toggle starting positions
-       
+
+
+        var score = 0;
+
 
         var dogs = [];
-        var dogTotal = 5;
+        var dogTotal = dogLove;
 
+        var gameRunning = true;
 
         function mainLoop() {
             colorRect(0, 0, canvas.width, canvas.height, 'black') // background
             //            colorRect(playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT, 'green') //player
-            drawingImages(img.player, playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT);
-            //            colorRect(dogXpos, dogYpos, DOG_WIDTH, DOG_HEIGHT, 'green') //block
-            
+            if (gameRunning) {
+
+                drawingImages(img.player, playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT);
+                //            colorRect(dogXpos, dogYpos, DOG_WIDTH, DOG_HEIGHT, 'green') //block
+                textRender('Lives: ' + lives, 'white', 15, 25, '20px Arial');
+                textRender('Score: ' + score, 'white', canvas.width - 100, 25, '20px Arial');
 
 
-            if (startingPos) {
-                startPos();
-                startingPos = false;
 
+                if (startingPos) {
+                    startPos();
+                    startingPos = false;
+
+                }
+
+
+
+                playerMove();
+                dogMove();
+                drawBlocks();
+                collision();
+            } else {
+                console.log('score is :' + score)
+                textRender('Gameover, your score was: ' + score, 'white', 15, 25, '20px Arial');
             }
 
-
-            playerMove();
-            dogMove();
-            drawBlocks();
-            collision();
-            
 
 
 
@@ -84,7 +118,7 @@
             var newBlockRand = {
                 dogSize: dogSize,
                 dogXpos: Math.floor(Math.random() * (400 - dogSize - 0)) + 0,
-                dogYpos: Math.floor(Math.random() * (400 - dogSize - 0)) + 0,
+                dogYpos: Math.floor(Math.random() * (canvas.height*.6 - dogSize - 0)) + 0,
                 dogXspeed: Math.floor(Math.random() * (5 - 0)) + 1,
                 dogYspeed: Math.floor(Math.random() * (5 - 0)) + 1,
             }
@@ -94,14 +128,14 @@
         function drawBlocks() {
             dogs.forEach(function(block, index) {
                 drawingImages(img.dog, block.dogXpos, block.dogYpos, block.dogSize, block.dogSize);
-          
+
             });
         }
-        
-        function collision(){
-            if (playerYpos + PLAYER_HEIGHT, PLAYER_WIDTH > dogYpos && playerYpos < dogYpos + DOG_HEIGHT, DOG_WIDTH
-               && playerXpos + PLAYER_HEIGHT, PLAYER_WIDTH > dogXpos && playerYpos < dogXpos + DOG_HEIGHT, DOG_WIDTH
-               ){
+
+        function collision() {
+            if (playerYpos + PLAYER_HEIGHT, PLAYER_WIDTH > dogYpos && playerYpos < dogYpos + DOG_HEIGHT, DOG_WIDTH &&
+                playerXpos + PLAYER_HEIGHT, PLAYER_WIDTH > dogXpos && playerYpos < dogXpos + DOG_HEIGHT, DOG_WIDTH
+            ) {
                 starting = true;
             }
         }
@@ -143,62 +177,89 @@
             canvasContext.fillRect(x, y, w, h);
         }
 
-    
 
-            function startPos() {
-                playerXpos = canvas.width / 2 - PLAYER_WIDTH / 2;
-                playerYpos = canvas.height - PLAYER_HEIGHT;
+
+        function startPos() {
+            playerXpos = canvas.width / 2 - PLAYER_WIDTH / 2;
+            playerYpos = canvas.height - PLAYER_HEIGHT;
+            lives = 4;
+            score = 0;
+            gameRunning = true;
+            
+            if (dogs.length < 1) {
 
                 for (i = 0; i < dogTotal; i++) {
                     dogs.push(randomBlock());
                 }
-
             }
 
-            function playerMove() {
+        }
 
-                if (leftArrowKeyPressed && playerXpos > 0) {
-                    playerXpos -= playerXspeed;
+
+
+        function playerMove() {
+
+            if (leftArrowKeyPressed) {
+                if(playerXpos < 0){
+                   playerXpos = canvas.width - PLAYER_WIDTH;
                 }
-                if (rightArrowKeyPressed && playerXpos < 370) {
-                    playerXpos += playerXspeed;
+                playerXpos -= playerXspeed;
+            }
+            if (rightArrowKeyPressed ) {
+                if(playerXpos > canvas.width + PLAYER_WIDTH){
+                   playerXpos = 0;
+                   }
+                playerXpos += playerXspeed;
+            }
+        }
+
+        function drawingImages(src, x, y, w, h) {
+            canvasContext.drawImage(src, x, y, w, h);
+        }
+
+        function dogMove() {
+            dogs.forEach(function(dog, index) {
+                dog.dogYpos += dog.dogYspeed;
+                dog.dogXpos += dog.dogXspeed;
+                if (dog.dogXpos > canvas.width - dog.dogSize) {
+                    dog.dogXspeed *= -1;
                 }
-            }
+                if (dog.dogXpos < 0) {
+                    dog.dogXspeed *= -1;
+                }
+                if (dog.dogYpos > canvas.height - dog.dogSize) {
+                    dog.dogYspeed *= -1;
+                    score++;
+                }
+                if (dog.dogYpos < 0) {
+                    dog.dogYspeed *= -1;
+                }
+                if (
+                    playerXpos + PLAYER_WIDTH > dog.dogXpos &&
+                    playerXpos < dog.dogXpos + dog.dogSize &&
+                    playerYpos + PLAYER_HEIGHT > dog.dogYpos &&
+                    playerYpos < dog.dogYpos + dog.dogSize
+                ) {
+                    lives--;
+                    console.log(lives);
+                    playerXpos = 0;
 
-            function drawingImages(src, x, y, w, h) {
-                canvasContext.drawImage(src, x, y, w, h);
-            }
+                    if (lives < 0) {
+                        gameRunning = false;
+                    }
 
-            function dogMove() {
-                dogs.forEach(function(dog, index) {
-                    dog.dogYpos += dog.dogYspeed;
-                    dog.dogXpos += dog.dogXspeed;
-                    if (dog.dogXpos > canvas.width - dog.dogSize) {
-                        dog.dogXspeed *= -1;
-                    }
-                    if (dog.dogXpos < 0) {
-                        dog.dogXspeed *= -1;
-                    }
-                    if (dog.dogYpos > canvas.height - dog.dogSize) {
-                        dog.dogYspeed *= -1;
-                    }
-                    if (dog.dogYpos < 0) {
-                        dog.dogYspeed *= -1;
-                    }
-                    if (
-                        playerXpos + PLAYER_WIDTH > dog.dogXpos 
-                        && playerXpos < dog.dogXpos + dog.dogSize
-                        && playerYpos + PLAYER_HEIGHT > dog.dogYpos 
-                        && playerYpos < dog.dogYpos + dog.dogSize
-                    ){
-                        lives--;
-                        console.log(lives);
-                        playerXpos = 0;
-                    }
-                  
+                }
 
 
-                });
+            });
+
+
+        }
+
+        function textRender(text, c, x, y, font) {
+            canvasContext.fillStyle = c;
+            canvasContext.font = font;
+            canvasContext.fillText(text, x, y);
 
         }
 
