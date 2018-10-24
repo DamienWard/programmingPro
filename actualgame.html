@@ -23,9 +23,18 @@
     <script>
         var canvas, canvasContext, imgAssets;
         var username = '';
-        while(username == '') {
+        while(username == '' || username == null) {
             username = prompt('What is your name?') || '';
         }
+        
+        var dogNull = '';
+        while(dogNull == '' || dogNull == null) {
+            dogNull = prompt('How many dogs are you wanting?') || '';
+            
+        }
+        var dogLove = dogNull;
+        
+        
 
         function playagain() {
             console.log('worked');
@@ -41,8 +50,7 @@
 
             setInterval(mainLoop, 1000 / 50);
         }
-
-        var dogLove = prompt('How many dogs are you wanting?');
+       
         /* player info */
         var playerXpos = 0;
         var playerYpos = 0;
@@ -105,7 +113,7 @@
                 collision();
             } else {
                 console.log('score is :' + score)
-                textRender('Gameover, your score was: ' + score, 'white', 15, 25, '20px Arial');
+                textRender('Gameover '+ username + ', your score was: ' + score, 'white', 15, 25, '20px Arial');
             }
 
 
@@ -206,7 +214,7 @@
                 playerXpos -= playerXspeed;
             }
             if (rightArrowKeyPressed ) {
-                if(playerXpos > canvas.width + PLAYER_WIDTH){
+                if(playerXpos > canvas.width - PLAYER_WIDTH){
                    playerXpos = 0;
                    }
                 playerXpos += playerXspeed;
