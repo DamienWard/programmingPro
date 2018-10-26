@@ -111,7 +111,8 @@
                 dogMove();
                 drawBlocks();
                 collision();
-            } else {
+            }
+            else {
                 console.log('score is :' + score)
                 textRender('Gameover '+ username + ', your score was: ' + score, 'white', 15, 25, '20px Arial');
             }
@@ -199,9 +200,18 @@
                 for (i = 0; i < dogTotal; i++) {
                     dogs.push(randomBlock());
                 }
-            }
+            
+                if (dogs.length > 0) {
 
-        }
+                for (i = 0; i < dogTotal; i++) {
+                    dogs.push(randomBlock());
+                }
+            
+            }
+        
+        
+
+           
 
 
 
@@ -270,6 +280,7 @@
             canvasContext.fillText(text, x, y);
 
         }
+    }
 
     </script>
 </body>
