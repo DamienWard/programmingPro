@@ -23,21 +23,21 @@
     <script>
         var canvas, canvasContext, imgAssets;
         var username = '';
-        while(username == '' || username == null) {
+        while (username == '' || username == null) {
             username = prompt('What is your name?') || '';
         }
-        
+
         var dogNull = '';
-        while(dogNull == '' || dogNull == null) {
+        while (dogNull == '' || dogNull == null) {
             dogNull = prompt('How many dogs are you wanting?') || '';
-            
+
         }
         var dogLove = dogNull;
-        
-        
+
+
 
         function playagain() {
-            console.log('worked');
+//            console.log('worked');
         }
         window.onload = function() {
             canvas = document.getElementById('gameCanvas');
@@ -50,7 +50,7 @@
 
             setInterval(mainLoop, 1000 / 50);
         }
-       
+
         /* player info */
         var playerXpos = 0;
         var playerYpos = 0;
@@ -90,6 +90,11 @@
         function mainLoop() {
             colorRect(0, 0, canvas.width, canvas.height, 'black') // background
             //            colorRect(playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT, 'green') //player
+                if (startingPos) {
+                    startPos();
+                    startingPos = false;
+
+                }
             if (gameRunning) {
 
                 drawingImages(img.player, playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -99,11 +104,6 @@
 
 
 
-                if (startingPos) {
-                    startPos();
-                    startingPos = false;
-
-                }
 
 
 
@@ -112,8 +112,8 @@
                 drawBlocks();
                 collision();
             } else {
-                console.log('score is :' + score)
-                textRender('Gameover '+ username + ', your score was: ' + score, 'white', 15, 25, '20px Arial');
+//                console.log('score is :' + score)
+                textRender('Gameover ' + username + ', your score was: ' + score, 'white', 15, 25, '20px Arial');
             }
 
 
@@ -126,7 +126,7 @@
             var newBlockRand = {
                 dogSize: dogSize,
                 dogXpos: Math.floor(Math.random() * (400 - dogSize - 0)) + 0,
-                dogYpos: Math.floor(Math.random() * (canvas.height*.6 - dogSize - 0)) + 0,
+                dogYpos: Math.floor(Math.random() * (canvas.height * .6 - dogSize - 0)) + 0,
                 dogXspeed: Math.floor(Math.random() * (5 - 0)) + 1,
                 dogYspeed: Math.floor(Math.random() * (5 - 0)) + 1,
             }
@@ -161,7 +161,7 @@
         }
 
         function keyPressed(evt) {
-            console.log(evt.keyCode)
+//            console.log(evt.keyCode)
             if (evt.keyCode == LEFT_ARROW_KEY) {
                 leftArrowKeyPressed = true;
             }
@@ -194,29 +194,43 @@
             score = 0;
             gameRunning = true;
             
+            if (dogs.length > 0) {
+
+                for (i = 0; i < dogTotal; i++) {
+                    delete dogs[i];
+                    dogs.push(randomBlock());
+                }
+                dogs = dogs.filter(item => item !== undefined);
+            
+
+            }
             if (dogs.length < 1) {
 
                 for (i = 0; i < dogTotal; i++) {
                     dogs.push(randomBlock());
                 }
-            }
+                dogs = dogs.filter(item => item !== undefined); 
 
+            }
+           
         }
+
+
 
 
 
         function playerMove() {
 
             if (leftArrowKeyPressed) {
-                if(playerXpos < 0){
-                   playerXpos = canvas.width - PLAYER_WIDTH;
+                if (playerXpos < 0) {
+                    playerXpos = canvas.width - PLAYER_WIDTH;
                 }
                 playerXpos -= playerXspeed;
             }
-            if (rightArrowKeyPressed ) {
-                if(playerXpos > canvas.width - PLAYER_WIDTH){
-                   playerXpos = 0;
-                   }
+            if (rightArrowKeyPressed) {
+                if (playerXpos > canvas.width - PLAYER_WIDTH) {
+                    playerXpos = 0;
+                }
                 playerXpos += playerXspeed;
             }
         }
@@ -249,7 +263,7 @@
                     playerYpos < dog.dogYpos + dog.dogSize
                 ) {
                     lives--;
-                    console.log(lives);
+//                    console.log(lives);
                     playerXpos = 0;
 
                     if (lives < 0) {
