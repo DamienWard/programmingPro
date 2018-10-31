@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Meow Cat</title>
+   <title>Meow Cat</title>
     <style>
         button,
         canvas {
@@ -18,34 +18,34 @@
 </head>
 
 <body>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <button onclick='startPos()'>Play Again</button>
-    <script>
-        var canvas, canvasContext, imgAssets;
+    <canvas id="gameCanvas" width="400" height="400"></canvas> 
+    <button onclick='startPos()'>Play Again</button> 
+    <script> 
+        var canvas, canvasContext, imgAssets; //Defines the major variables in order for the canvas to work properly
         var username = '';
         while (username == '' || username == null) {
-            username = prompt('What is your name?') || '';
+            username = prompt('What is your name?') || ''; //Variable that asks for name 
         }
 
         var dogNull = '';
         while (dogNull == '' || dogNull == null) {
-            dogNull = prompt('How many dogs are you wanting?') || '';
+            dogNull = prompt('How many dogs are you wanting?') || ''; //Variable that asks for amount of dogs wanted 
 
         }
-        var dogLove = dogNull;
+        var dogLove = dogNull; //Doesn't allow bypass to question
 
 
 
         function playagain() {
 //            console.log('worked');
-        }
+        } //Play again function
         window.onload = function() {
             canvas = document.getElementById('gameCanvas');
             canvasContext = canvas.getContext('2d');
             imgAssets = loadImgAssets();
 
-            document.addEventListener('keydown', keyPressed);
-            document.addEventListener('keyup', keyReleased);
+            document.addEventListener('keydown', keyPressed); //Sets downkey to work
+            document.addEventListener('keyup', keyReleased); //Sets upkey to work
 
 
             setInterval(mainLoop, 1000 / 50);
@@ -67,8 +67,8 @@
         var dogXspeed = 6;
         var lives = 6;
 
-        var dogs = [];
-        var lives = 3;
+        var dogs = []; //Allows dogs 
+        var lives = 3; //Dog lives
 
         /* player keyPressing */
         const LEFT_ARROW_KEY = 37;
@@ -79,13 +79,13 @@
         var startingPos = true; // toggle starting positions
 
 
-        var score = 0;
+        var score = 0; //Sets variable for score
 
 
         var dogs = [];
         var dogTotal = dogLove;
 
-        var gameRunning = true;
+        var gameRunning = true; //Runs game
 
         function mainLoop() {
             colorRect(0, 0, canvas.width, canvas.height, 'black') // background
@@ -99,8 +99,8 @@
 
                 drawingImages(img.player, playerXpos, playerYpos, PLAYER_WIDTH, PLAYER_HEIGHT);
                 //            colorRect(dogXpos, dogYpos, DOG_WIDTH, DOG_HEIGHT, 'green') //block
-                textRender('Lives: ' + lives, 'white', 15, 25, '20px Arial');
-                textRender('Score: ' + score, 'white', canvas.width - 100, 25, '20px Arial');
+                textRender('Lives: ' + lives, 'white', 15, 25, '20px Arial'); //Lives text
+                textRender('Score: ' + score, 'white', canvas.width - 100, 25, '20px Arial'); //Score text
 
 
 
@@ -113,7 +113,7 @@
                 collision();
             } else {
 //                console.log('score is :' + score)
-                textRender('Gameover ' + username + ', your score was: ' + score, 'white', 15, 25, '20px Arial');
+                textRender('Gameover ' + username + ', your score was: ' + score, 'white', 15, 25, '20px Arial'); //Gameover screen 
             }
 
 
@@ -131,13 +131,13 @@
                 dogYspeed: Math.floor(Math.random() * (5 - 0)) + 1,
             }
             return newBlockRand
-        }
+        } //gives dogs random positions
 
         function drawBlocks() {
             dogs.forEach(function(block, index) {
                 drawingImages(img.dog, block.dogXpos, block.dogYpos, block.dogSize, block.dogSize);
 
-            });
+            }); //Sets dog as object
         }
 
         function collision() {
@@ -146,19 +146,19 @@
             ) {
                 starting = true;
             }
-        }
+        } //Creates a reaction when dogs and cat collide
 
         function loadImgAssets() {
             img = {};
             img.player = new Image();
             img.player.src = 'Image/catd.png'
             img.dog = new Image();
-            img.dog.src = 'Image/dog.png'
+            img.dog.src = 'Image/dog.png' 
 
 
 
             return img;
-        }
+        } //Loads Cat and Dog images
 
         function keyPressed(evt) {
 //            console.log(evt.keyCode)
@@ -168,7 +168,7 @@
             if (evt.keyCode == RIGHT_ARROW_KEY) {
                 rightArrowKeyPressed = true;
             }
-        }
+        } //When left and right keys are pressed, player moves
 
 
         function keyReleased(evt) {
@@ -178,12 +178,12 @@
             if (evt.keyCode == RIGHT_ARROW_KEY) {
                 rightArrowKeyPressed = false;
             }
-        }
+        } //When left and right keys are not pressed, player does not move
 
         function colorRect(x, y, w, h, color) {
             canvasContext.fillStyle = color;
             canvasContext.fillRect(x, y, w, h);
-        }
+        } //Colour 
 
 
 
@@ -192,7 +192,7 @@
             playerYpos = canvas.height - PLAYER_HEIGHT;
             lives = 4;
             score = 0;
-            gameRunning = true;
+            gameRunning = true; //Starting position of cat
             
             if (dogs.length > 0) {
 
@@ -200,7 +200,7 @@
                     delete dogs[i];
                     dogs.push(randomBlock());
                 }
-                dogs = dogs.filter(item => item !== undefined);
+                dogs = dogs.filter(item => item !== undefined); //Deletes array of dogs then puts more in, to allow the dogs to respawn once 'Play Again' is pressed
             
 
             }
@@ -209,7 +209,7 @@
                 for (i = 0; i < dogTotal; i++) {
                     dogs.push(randomBlock());
                 }
-                dogs = dogs.filter(item => item !== undefined); 
+                dogs = dogs.filter(item => item !== undefined); //Pushes dogs as random array
 
             }
            
@@ -226,11 +226,11 @@
                     playerXpos = canvas.width - PLAYER_WIDTH;
                 }
                 playerXpos -= playerXspeed;
-            }
+            } //Stops player going out of screen completely
             if (rightArrowKeyPressed) {
                 if (playerXpos > canvas.width - PLAYER_WIDTH) {
                     playerXpos = 0;
-                }
+                }//Stops player going out of screen completely
                 playerXpos += playerXspeed;
             }
         }
@@ -239,7 +239,7 @@
             canvasContext.drawImage(src, x, y, w, h);
         }
 
-        function dogMove() {
+        function dogMove() { // This moves the dog
             dogs.forEach(function(dog, index) {
                 dog.dogYpos += dog.dogYspeed;
                 dog.dogXpos += dog.dogXspeed;
@@ -261,14 +261,14 @@
                     playerXpos < dog.dogXpos + dog.dogSize &&
                     playerYpos + PLAYER_HEIGHT > dog.dogYpos &&
                     playerYpos < dog.dogYpos + dog.dogSize
-                ) {
+                ) { //This detects if the player has been hit   
                     lives--;
 //                    console.log(lives);
                     playerXpos = 0;
 
                     if (lives < 1) {
                         gameRunning = false;
-                    }
+                    } //Tells the game to stop once lives are less than 1
 
                 }
 
@@ -283,7 +283,7 @@
             canvasContext.font = font;
             canvasContext.fillText(text, x, y);
 
-        }
+        } //Creates a template
 
     </script>
 </body>
